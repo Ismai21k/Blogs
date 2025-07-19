@@ -20,7 +20,6 @@ const PostSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      required: true,
       unique: true,
     },
     excerpt: {
@@ -66,18 +65,21 @@ const PostSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Create slug from title before saving
-PostSchema.pre('save', function (next) {
+// validate ensures the slug is available before validation and save, even in dev environments.
+PostSchema.pre('validate', function (next) {
+
   if (!this.isModified('title')) {
+    console.log('Title not modified. Skipping slug generation.');
     return next();
   }
-  
+
   this.slug = this.title
     .toLowerCase()
     .replace(/[^\w ]+/g, '')
     .replace(/ +/g, '-');
-    
+
   next();
+
 });
 
 // Virtual for post URL
@@ -97,4 +99,8 @@ PostSchema.methods.incrementViewCount = function () {
   return this.save();
 };
 
-module.exports = mongoose.model('Post', PostSchema); 
+
+module.exports = mongoose.model('Post', PostSchema);
+// const Post = mongoose.models.Post || mongoose.model('Post', PostSchema);
+// module.exports = Post;
+// In development with hot reload (e.g., nodemon, Next.js, Vite), Mongoose can register the model multiple times and detach the pre-save hooks.

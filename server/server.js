@@ -6,18 +6,21 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-
-// Import routes
-const postRoutes = require('./routes/posts');
-const categoryRoutes = require('./routes/categories');
-const authRoutes = require('./routes/auth');
+const {connectDB} = require('./config/db');
 
 // Load environment variables
 dotenv.config();
 
+
+// Import routes
+const postRoutes = require('./routes/postRoute');
+const categoryRoutes = require('./routes/categoryRoute');
+const userRoutes =  require('./routes/userRoute');
+
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
+connectDB();
 
 // Middleware
 app.use(cors());
@@ -36,9 +39,9 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // API routes
-app.use('/api/posts', postRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/', postRoutes);
+app.use('/', userRoutes);
+app.use('/', categoryRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -54,25 +57,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to MongoDB and start server
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('Failed to connect to MongoDB', err);
-    process.exit(1);
-  });
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Promise Rejection:', err);
-  // Close server & exit process
-  process.exit(1);
-});
 
-module.exports = app; 
+app.listen(PORT, () => {
+  console.log(`Server running on port:http://localhost:${PORT}`);
+})
