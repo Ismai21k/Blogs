@@ -32,7 +32,7 @@ const Home = () => {
   return (
     <div className="p-6">
       <Navbar />
-      <h1 className="text-2xl mb-4">Latest Posts</h1>
+      <h1 className="text-2xl mb-4">Published Blog</h1>
       <div className="grid gap-4">
         {posts.map(post => (
           <PostCard key={post._id} post={post} />

@@ -24,6 +24,8 @@ api.interceptors.request.use(
   }
 );
 
+console.log('API service', api.get('/posts'))
+
 // Add response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
@@ -51,8 +53,8 @@ export const postService = {
   },
 
   // Get a single post by ID or slug
-  getPost: async (idOrSlug) => {
-    const response = await api.get(`/posts/${idOrSlug}`);
+  getPost: async (id) => {
+    const response = await api.get(`/posts/${id}`);
     return response.data;
   },
 
@@ -80,9 +82,29 @@ export const postService = {
 
   // Add a comment to a post
   addComment: async (postId, commentData) => {
-    const response = await api.post(`/posts/${postId}/comments`, commentData);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const token = user?.token; // or user?.accessToken depending on your setup
+
+    console.log('token', user )
+    const payload = { comment: commentData }; // singular key
+    console.log('Sending comment:', payload);
+    
+    const response = await api.post(`/posts/${postId}/comments`, payload,
+      {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+
+    );
     return response.data;
   },
+
+  // Increment view count for a post
+  // incrementViewCount: async (postId) => {
+  //   const response = await api.post(`/posts/${postId}/view`);
+  //   return response.data;
+  // },
 
   // Search posts
   searchPosts: async (query) => {
@@ -118,8 +140,10 @@ export const authService = {
   login: async (credentials) => {
     const response = await api.post('/login', credentials);
     if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      const { user, token } = response.data;
+      localStorage.setItem('user', JSON.stringify({ ...user, token }));
+     
     }
     return response.data;
   },
