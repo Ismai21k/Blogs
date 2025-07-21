@@ -1,6 +1,8 @@
 const Post = require('../models/Post');
 const formatDate = require('../utils/formatDate');
-const Category = require('../models/category')
+const Category = require('../models/category');
+const mongoose = require('mongoose');
+const User = require('../models/User'); // Make sure this is present
 
 // Create a new post
 exports.createPost = async (req, res) => {
@@ -47,10 +49,12 @@ exports.getBlog = async (req, res) => {
         const limit    = parseInt(req.query.limit || '10', 10);
         const category = req.query.category;
 
-        const filter = category ? { category } : {};
+        const filter = category ? { category: category} : {};
 
         const [posts, total] = await Promise.all([
-                Post.find(filter)
+                Post.find({isPublished: true, filter:category})
+                    .populate('author', 'username email')
+                    .select('title excerpt slug featuredImage viewCount comments createdAt') // only summary fields
                     .sort({ createdAt: -1 })
                     .skip((page - 1) * limit)
                     .limit(limit)
@@ -91,9 +95,17 @@ exports.getBlog = async (req, res) => {
 exports.getSpecificBlog= async (req, res) => {
     try {
         const { id } = req.params;
-        const post = await Post.isValidObjectId(idOrSlug) 
-            ? await Post.findById(idOrSlug)
-            : await Post.findOne({ slug: idOrSlug });
+
+        const post = await Post.findById(id)
+          .populate('author', 'username')
+          .populate('category', 'name')
+          .populate({
+            path: 'comments',
+            populate: {
+              path: 'user',
+              select: 'username',
+            },
+          });
 
             // Check if post exists
         if (!post) return res.status(404).json({
@@ -182,24 +194,40 @@ exports.deleteBlog = async (req, res) => {
 
 exports.addComment = async (req, res) => {
   try {
-    const { postId } = req.params;
-    const { userId, content } = req.body;       // or use req.user.id if you have auth
+    const { id } = req.params;
+    const { comment } = req.body;
+    console.log('Adding comment:', comment);
 
-    if (!content) {
+    // Extract user ID from authentication middleware or body (fallback)
+    const userId = req.user?.id || req.body.userId;
+    console.log('User ID:', userId);
+
+    // Validation: comment must be non-empty
+    if (!comment || comment.trim() === '') {
       return res.status(400).json({
         success: false,
         message: 'Comment content is required',
       });
     }
 
-    if (!mongoose.isValidObjectId(postId)) {
+    // Validation: user ID must be valid
+    if (!userId || !mongoose.isValidObjectId(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or missing user ID',
+      });
+    }
+
+    // Validation: post ID must be valid
+    if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid post ID',
       });
     }
 
-    const post = await Post.findById(postId);
+    // Find the post
+    const post = await Post.findById(id);
     if (!post) {
       return res.status(404).json({
         success: false,
@@ -207,21 +235,35 @@ exports.addComment = async (req, res) => {
       });
     }
 
-    // the model method you already wrote
-    await post.addComment(userId, content);
+    // Add the comment using your model method
+    await post.addComment(userId, comment);
 
-    // you might want to populate the commenter’s name/email for the response
-    const updatedPost = await Post.findById(postId)
-      .populate('comments.user', 'username email');  // pick the fields you need
-      res.status(201).json({
+    // Get updated post with populated user in comments (no lean to preserve Mongoose features)
+    const updatedPost = await Post.findById(id)
+      .populate('author', 'username')
+      .populate('category', 'name')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'username', // Only get the username field
+        }
+      });
+    const newComment = updatedPost.comments.at(-1);
+
+    console.log('New comment added by:', newComment);
+
+    res.status(201).json({
       success: true,
-      post: updatedPost,           // or just return updatedPost.comments if lighter
+      message: 'Comment added successfully',
+      comment: newComment, // singular and clear
     });
+
   } catch (err) {
     console.error('Error adding comment:', err);
     res.status(500).json({
       success: false,
-      message: 'Server Error',
+      message: 'Server error',
     });
   }
 };

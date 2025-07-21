@@ -8,17 +8,17 @@ const jwt = require('jsonwebtoken')
 // 5. If verification fails, responds with 401 and "Invalid token".
 
 const protect = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if(!token) return res.status(401).json({ message: 'Unauthorized' });
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
-    try {
-        const decode = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decode)
-        req.user = decode;
-        next();
-    } catch {
-        res.status(401).json({ message:'Invalid token' })
-    }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Decoded JWT:', decoded); // make sure it has user info like id
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
 };
 
 module.exports = protect;

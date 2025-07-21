@@ -28,7 +28,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// serve static files from the 'uploads' directory
+// this allows the server to serve files from the 'uploads' directory
+// so that images can be accessed via URLs like http://localhost:5000/uploads/image.jpg
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Log requests in development mode
 if (process.env.NODE_ENV === 'development') {
