@@ -52,6 +52,16 @@ export const postService = {
     return response.data;
   },
 
+  getUserPosts: async (userId, page = 1, limit = 10, category = null) => {
+    let url = `/posts/user/${userId}/?page=${page}&limit=${limit}`;
+    if (category) {
+      url += `&category=${category}`;
+    }
+    const response = await api.get(url);
+    console.log('url :',url)
+    return response.data;
+  },
+
   // Get a single post by ID or slug
   getPost: async (id) => {
     const response = await api.get(`/posts/${id}`);
@@ -126,6 +136,12 @@ export const categoryService = {
     const response = await api.post('/categories', categoryData,);
     return response.data;
   },
+
+  //Delete Category
+  deleteCategory: async (id) => {
+    const response = await api.delete(`/category/${id}`);
+    return response.data
+  }
 };
 
 // Auth API services

@@ -6,6 +6,7 @@ import Login from './pages/Login.jsx'
 import Home from './pages/Home.jsx'
 import NewPost from './pages/NewPost.jsx'
 import ReadMore from './pages/ReadMore.jsx'
+import UserManagement from './pages/UserManagement.jsx'
 
 function App() {
   
@@ -18,6 +19,7 @@ function App() {
         <Route path='/home'  element={<Home/>}/>
         <Route path='/newblog' element={<NewPost/>}/>
         <Route path='/readmore/:id' element={<ReadMore/>}/>
+        <Route path='/userblogs' element={<UserManagement />}/>
         <Route path='*' element={<h1>Page Not Found</h1>}/>
       </Routes>
       

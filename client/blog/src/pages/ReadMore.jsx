@@ -51,7 +51,7 @@ const ReadMore = () => {
     }
   };
 
-  // console.log('Post comment', post.comments[0].user);
+  
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
 //   if (!post) return <div className="text-center py-10 text-red-600">Post not found or unpublished.</div>;
