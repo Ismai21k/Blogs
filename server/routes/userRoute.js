@@ -5,7 +5,7 @@ const protect = require('../middleware/Protect');
 const router = express.Router();
 
 router.post('/register', registerUser);
-router.post('/login', protect, loginUser);
+router.post('/login', loginUser);
 
 
 module.exports = router;

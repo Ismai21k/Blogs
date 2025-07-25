@@ -14,9 +14,9 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path='/' exact element={<Register/>}/>
+        <Route path='/' exact  element={<Home/>}/>
+        <Route path='/register'  element={<Register/>}/>
         <Route path='/login'  element={<Login/>}/>
-        <Route path='/home'  element={<Home/>}/>
         <Route path='/newblog' element={<NewPost/>}/>
         <Route path='/readmore/:id' element={<ReadMore/>}/>
         <Route path='/userblogs' element={<UserManagement />}/>

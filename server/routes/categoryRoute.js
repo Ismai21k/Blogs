@@ -12,7 +12,7 @@ router
 
 // get a specific category by id or delete
 router
-    .route('category/:id')
+    .route('/category/:id')
     .get(getCategoryById)
     .delete(deleteCategory);
 

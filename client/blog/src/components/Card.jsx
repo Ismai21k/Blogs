@@ -1,5 +1,4 @@
-import React from 'react'; // ✅ Required for JSX
-
+import React from 'react';
 
 export const Card = ({
   children,
@@ -7,13 +6,16 @@ export const Card = ({
   variant = "default", // "default" | "bordered" | "transparent"
   ...props
 }) => {
-  const base = "rounded-lg p-4 shadow-md";
+  const base =
+    "rounded-2xl p-6 md:p-8 transition-all duration-300 ease-in-out";
 
   const variants = {
-    default: "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100",
+    default:
+      "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 shadow-lg hover:shadow-xl",
     bordered:
-      "bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100",
-    transparent: "bg-transparent shadow-none",
+      "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:shadow-md",
+    transparent:
+      "bg-transparent text-zinc-900 dark:text-zinc-100 shadow-none hover:shadow-none",
   };
 
   return (

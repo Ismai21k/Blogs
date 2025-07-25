@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { postService } from '../services/api.jsx';
 import { useNavigate } from 'react-router-dom';
+import { Navbar } from '../components/Navbar.jsx';
+import { Footer } from '../components/Footer.jsx';
 
 const NewPost = () => {
   const storedUser = localStorage.getItem('user');
   const user = JSON.parse(storedUser);
-  const [author, setAuthor] = useState(user?._id || '');
+  const [author] = useState(user?._id || '');
+  const [featuredImage, setFeaturedImage] = useState(null);
 
   const [postData, setPostData] = useState({
     title: '',
@@ -16,7 +19,6 @@ const NewPost = () => {
     isPublished: false,
   });
 
-  const [featuredImage, setFeaturedImage] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -55,82 +57,95 @@ const NewPost = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Create New Post</h2>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <input
-          type="text"
-          name="title"
-          value={postData.title}
-          onChange={handleChange}
-          placeholder="Post Title"
-          className="w-full mb-3 p-2 border"
-          required
-        />
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 dark:from-gray-900 dark:via-gray-800 ">
+      <Navbar />
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4">
+      
+      <div className="max-w-3xl mx-auto bg-white/70 dark:bg-gray-900/80 backdrop-blur-lg border border-gray-200 dark:border-gray-700 shadow-2xl rounded-2xl p-10">
+        <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-white mb-8">✍️ Create a New Blog Post</h2>
 
-        <textarea
-          name="content"
-          value={postData.content}
-          onChange={handleChange}
-          placeholder="Post Content"
-          className="w-full mb-3 p-2 border"
-          required
-        />
-
-        <textarea
-          name="excerpt"
-          value={postData.excerpt}
-          onChange={handleChange}
-          placeholder="Short Excerpt (max 200 characters)"
-          className="w-full mb-3 p-2 border"
-          maxLength={200}
-        />
-
-        <input
-          type="text"
-          name="categoryName"
-          value={postData.categoryName}
-          onChange={handleChange}
-          placeholder="Category"
-          className="w-full mb-3 p-2 border"
-          required
-        />
-
-        <input
-          type="text"
-          name="tags"
-          value={postData.tags}
-          onChange={handleChange}
-          placeholder="Tags (comma separated)"
-          className="w-full mb-3 p-2 border"
-        />
-
-        <label className="flex items-center mb-3">
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
           <input
-            type="checkbox"
-            name="isPublished"
-            checked={postData.isPublished}
+            type="text"
+            name="title"
+            value={postData.title}
             onChange={handleChange}
-            className="mr-2"
+            placeholder="Post Title"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
           />
-          Publish now
-        </label>
 
-        <input
-          type="file"
-          name="featuredImage"
-          onChange={handleImageChange}
-          accept=".png, .jpeg, .jpg"
-          className="mb-3"
-        />
+          <textarea
+            name="content"
+            value={postData.content}
+            onChange={handleChange}
+            placeholder="Write your content here..."
+            rows={6}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
+          />
 
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Submit Post
-        </button>
-      </form>
+          <textarea
+            name="excerpt"
+            value={postData.excerpt}
+            onChange={handleChange}
+            placeholder="Short Excerpt (max 200 characters)"
+            maxLength={200}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-purple-400"
+          />
+
+          <input
+            type="text"
+            name="categoryName"
+            value={postData.categoryName}
+            onChange={handleChange}
+            placeholder="Category"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-purple-400"
+            required
+          />
+
+          <input
+            type="text"
+            name="tags"
+            value={postData.tags}
+            onChange={handleChange}
+            placeholder="Tags (comma separated)"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-purple-400"
+          />
+
+          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <input
+              type="checkbox"
+              name="isPublished"
+              checked={postData.isPublished}
+              onChange={handleChange}
+              className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            Publish immediately
+          </label>
+
+          <div>
+            <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">Upload Featured Image</label>
+            <input
+              type="file"
+              name="featuredImage"
+              onChange={handleImageChange}
+              accept=".png, .jpeg, .jpg"
+              className="block w-full text-sm text-gray-600 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg shadow-lg hover:opacity-90 transition"
+          >
+            🚀 Publish Post
+          </button>
+        </form>
+      </div>
+      
+    </div>
+    <Footer />
     </div>
   );
 };

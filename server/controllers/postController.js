@@ -42,12 +42,12 @@ exports.createPost = async (req, res) => {
   }
 };
 
-
 exports.getBlog = async (req, res) => {
     try {
         const page     = parseInt(req.query.page  || '1', 10);
         const limit    = parseInt(req.query.limit || '10', 10);
         const category = req.query.category;
+        
 
         const filter = category ? { category: category} : {};
 
@@ -91,6 +91,58 @@ exports.getBlog = async (req, res) => {
     }
 };
 
+exports.getUserPosts = async (req, res) => {
+  try {
+    const page     = parseInt(req.query.page || '1', 10);
+    const limit    = parseInt(req.query.limit || '10', 10);
+    const userId   = req.params.id; // you can choose either way
+
+    console.log(userId)
+
+    // Construct filter: must match user, plus optional category
+    const filter = {
+      author: userId,
+      
+    };
+
+    const [posts, total] = await Promise.all([
+      Post.find(filter)
+        .populate('author', 'username email')
+        .select('title excerpt content category isPublished tags slug featuredImage viewCount comments createdAt')
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      Post.countDocuments(filter),
+    ]);
+
+    if (!posts || posts.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No posts found for this user.',
+      });
+    }
+
+    const formattedPosts = posts.map(post => ({
+      ...post,
+      createdAt: formatDate(post.createdAt),
+    }));
+
+    res.status(200).json({
+      success: true,
+      posts: formattedPosts,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error('Error fetching user posts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message,
+    });
+  }
+};
 // Get a specific post by ID
 exports.getSpecificBlog= async (req, res) => {
     try {
@@ -98,7 +150,7 @@ exports.getSpecificBlog= async (req, res) => {
 
         const post = await Post.findById(id)
           .populate('author', 'username')
-          .populate('category', 'name')
+          // .populate('category', 'name')
           .populate({
             path: 'comments',
             populate: {
@@ -181,7 +233,7 @@ exports.deleteBlog = async (req, res) => {
             message: 'Post deleted successfully'
         })
     } catch (error) {
-        cosole.error('Error deleting post:', error);
+        console.error('Error deleting post:', error);
         res.status(500).json({
             success: false,
             message: 'Server Error',

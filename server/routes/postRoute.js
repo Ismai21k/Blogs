@@ -1,5 +1,5 @@
 const express = require('express');
-const {createPost, getBlog, getSpecificBlog, updateBlog, deleteBlog, addComment} = require('../controllers/postController');
+const {createPost, getBlog, getSpecificBlog, updateBlog, deleteBlog, addComment, getUserPosts} = require('../controllers/postController');
 const upload = require('../middleware/Upload');
 const router = express.Router();
 const protect = require('../middleware/Protect');
@@ -22,6 +22,11 @@ router
 router
    .route('/posts/:id/comments')
    .post(protect,addComment);
+
+router
+   .route('/posts/user/:id')
+   .get(getUserPosts)
+   
    
 
 
