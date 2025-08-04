@@ -83,7 +83,7 @@ const ReadMore = () => {
           <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/50 overflow-hidden mb-8">
             <div className="aspect-video w-full overflow-hidden">
               <img
-                src={`http://localhost:5000/uploads/${post.featuredImage}`}
+                src={`https://blog-app-dbhw.onrender.com/uploads/${post.featuredImage}`}
                 alt={post.title}
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
