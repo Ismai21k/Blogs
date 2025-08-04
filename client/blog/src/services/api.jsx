@@ -5,7 +5,7 @@ import axios from 'axios';
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: 'https://blog-app-dbhw.onrender.com',
+  baseURL: 'https://blog-app-dbhw.onrender.com/',
   headers: {
     'Content-Type': 'application/json',// this a http header that tells the server that the request body is in json format
   },
