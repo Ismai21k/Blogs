@@ -103,7 +103,7 @@ See `.env.example` in both `client/blog` and `server` for required variables.
 ![Blog Image](blog_image.png)
 
 ## License
-
+.
 MIT
 
 ---
