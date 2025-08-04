@@ -100,7 +100,7 @@ See `.env.example` in both `client/blog` and `server` for required variables.
 
 ## Screenshots
 
-_Add screenshots of your app here._
+![Blog Image](blog_image.png)
 
 ## License
 
