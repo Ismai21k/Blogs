@@ -2,9 +2,15 @@
 
 import axios from 'axios';
 
+
+const baseURL =
+  window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : 'https://mvdzq63k-5173.uks1.devtunnels.ms/';
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL,
+
   headers: {
     'Content-Type': 'application/json',// this a http header that tells the server that the request body is in json format
   },
@@ -24,7 +30,6 @@ api.interceptors.request.use(
   }
 );
 
-console.log('API service', api.get('/posts'))
 
 // Add response interceptor for error handling
 api.interceptors.response.use(
@@ -95,9 +100,8 @@ export const postService = {
     const user = JSON.parse(localStorage.getItem('user'));
     const token = user?.token; // or user?.accessToken depending on your setup
 
-    console.log('token', user )
     const payload = { comment: commentData }; // singular key
-    console.log('Sending comment:', payload);
+    
     
     const response = await api.post(`/posts/${postId}/comments`, payload,
       {
