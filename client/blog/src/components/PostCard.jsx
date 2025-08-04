@@ -8,7 +8,7 @@ const PostCard = ({ post }) => {
       {post.featuredImage && (
         <div className="relative overflow-hidden">
           <img
-            src={`http://localhost:5000/uploads/${post.featuredImage}`}
+            src={`https://blog-app-dbhw.onrender.com/uploads/${post.featuredImage}`}
             alt={post.title}
             className="w-full h-64 sm:h-72 object-cover transition-transform duration-700 group-hover:scale-110"
           />
