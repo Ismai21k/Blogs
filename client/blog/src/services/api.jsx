@@ -9,8 +9,7 @@ const baseURL =
     : 'https://mvdzq63k-5173.uks1.devtunnels.ms/';
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL,
-
+  baseURL: 'https://blog-app-dbhw.onrender.com/',
   headers: {
     'Content-Type': 'application/json',// this a http header that tells the server that the request body is in json format
   },
