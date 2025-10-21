@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:  # Fixed typo: 'pathes' → 'paths'
-      - 'client/blog**'
+      - 'client/blog/**'
 
 jobs:
   deploy:  # Fixed indentation and typo: 'delpoy' → 'deploy'
     runs-on: ubuntu-latest
-   
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
