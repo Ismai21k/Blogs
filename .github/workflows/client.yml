@@ -15,39 +15,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-    # ...existing code...
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
       - name: Debug list client/blog files
         run: |
           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
           ls -la client || true
           ls -la client/blog || true
           git ls-files client/blog/package.json || echo "package.json not tracked"
-# ...existing code...
-     
-      - name: Setup Node.js  # Fixed typo: 'Node.json' → 'Node.js'
-        uses: actions/setup-node@v3  # Fixed casing: 'Setup-node' → 'setup-node'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '18.x'  # Changed to stable Node.js version
-          cache: 'npm'  # Fixed typo: 'cahe' → 'cache'
+          node-version: '18.x'
+          cache: 'pnpm'
           cache-dependency-path: 'client/blog/pnpm-lock.yaml'
-   
+
+      - name: Enable Corepack / pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
       - name: Install dependencies
-        run: | 
-          cd client/blog  # Updated path to match your project structure
-          npm ci
+        run: |
+          cd client/blog
+          pnpm install --frozen-lockfile
 
       - name: Run tests
         run: |
           cd client/blog
-          npm test  # Fixed typo: 'tets' → 'test'
+          pnpm test
 
       - name: Build project
         run: |
           cd client/blog
-          npm run build
+          pnpm run build
 
       - name: Deploy To Vercel
         env:
