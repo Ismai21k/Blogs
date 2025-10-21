@@ -32,7 +32,7 @@ jobs:
         with:
           node-version: '18.x'  # Changed to stable Node.js version
           cache: 'npm'  # Fixed typo: 'cahe' → 'cache'
-          cache-dependency-path: 'client/blog/package.json'
+          cache-dependency-path: 'client/blog/pnpm-lock.yaml'
    
       - name: Install dependencies
         run: | 
