@@ -1,0 +1,61 @@
+name: Deploy Frontend Client To Production Vercel
+
+on:
+  push:
+    branches:
+      - main
+    paths:  # Fixed typo: 'pathes' → 'paths'
+      - 'client/**'
+
+jobs:
+  deploy:  # Fixed indentation and typo: 'delpoy' → 'deploy'
+    runs-on: ubuntu-latest
+   
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+     
+      - name: Setup Node.js  # Fixed typo: 'Node.json' → 'Node.js'
+        uses: actions/setup-node@v3  # Fixed casing: 'Setup-node' → 'setup-node'
+        with:
+          node-version: '18.x'  # Changed to stable Node.js version
+          cache: 'npm'  # Fixed typo: 'cahe' → 'cache'
+          cache-dependency-path: 'client/package.json'
+   
+      - name: Install dependencies
+        run: | 
+          cd client/blog  # Updated path to match your project structure
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd client/blog
+          npm test  # Fixed typo: 'tets' → 'test'
+
+      - name: Build project
+        run: |
+          cd client/blog
+          npm run build
+
+      - name: Deploy To Vercel
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          cd client/blog  # Added cd command
+          npx vercel --prod --token ${VERCEL_TOKEN} --yes  # Simplified Vercel deployment command
+        
+      - name: Notify deployment status
+        if: always()  # Run this step regardless of previous step results
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "Frontend client deployed successfully to production."
+          else
+            echo "Frontend client deployment failed. Please check the logs for details."
+          fi
+
+
+
+
+

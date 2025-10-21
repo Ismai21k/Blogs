@@ -1,0 +1,57 @@
+name: Deploy Backend Server to Production Render
+
+on:
+  push:
+    branches:
+      - main
+    paths:  # Fixed typo: 'pathes' → 'paths'
+      - 'server/**'
+
+jobs: 
+  deploy:  # Fixed typo: 'delpoy' → 'deploy'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Fixed casing: 'Checkout' → 'checkout'
+
+      - name: Setup Node.js  # Fixed typo: 'Node.jobs' → 'Node.js'
+        uses: actions/setup-node@v3  # Fixed typo: 'sectup-node' → 'setup-node'
+        with:
+          node-version: '18.x'  # Changed to stable LTS version
+          cache: 'npm'
+          cache-dependency-path: 'server/package.json'
+
+      - name: Install dependencies
+        run: |
+          cd server
+          npm ci
+      
+      - name: Run tests
+        run: |
+          cd server 
+          npm test  # Fixed typo: 'tets' → 'test'
+
+      - name: Build project
+        run: |
+          cd server  
+          npm run build 
+ 
+      - name: Deploy To Render 
+        env:
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          curl -X POST "https://api.render.com/deploy/srv-${RENDER_SERVICE_ID}/deploys" \
+          -H "Authorization: Bearer ${RENDER_API_KEY}" \
+          -H "Content-Type: application/json"
+        
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "Backend server deployed successfully to production."
+          else
+            echo "Backend server deployment failed. Please check the logs for details."
+          fi
+
