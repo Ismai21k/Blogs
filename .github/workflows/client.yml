@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:  # Fixed typo: 'pathes' → 'paths'
-      - 'client/**'
+      - 'client/blog**'
 
 jobs:
   deploy:  # Fixed indentation and typo: 'delpoy' → 'deploy'
