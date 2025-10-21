@@ -5,7 +5,7 @@ Build a full-stack MERN (MongoDB, Express.js, React.js, Node.js) application tha
 
 ## 📂 Tasks
 
-### Task 1: Project Setup
+### Task 1: Project Setups
 - Set up a project with a clear directory structure for both client and server
 - Configure MongoDB connection using Mongoose
 - Set up Express.js server with necessary middleware
