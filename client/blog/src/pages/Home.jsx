@@ -1,4 +1,4 @@
-
+import React from 'react';
 
 import { useEffect, useState } from "react"
 import { postService } from "../services/api.jsx"
@@ -56,9 +56,19 @@ const Home = () => {
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
             Discover Amazing
-            <span className="block bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Stories & Ideas
-            </span>
+            <span
+            className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600"
+            style={{
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              color: 'transparent',
+              backgroundSize: '100% 100%',
+              backgroundRepeat: 'no-repeat',
+            }}
+          >
+            Stories & Ideas
+          </span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
             Explore insightful articles, tutorials, and stories from our community of passionate writers and creators.

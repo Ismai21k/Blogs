@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { useState, useEffect } from "react"
 import { postService } from "../services/api.jsx"
 import { Navbar } from "../components/Navbar.jsx"

@@ -1,4 +1,5 @@
 "use client"
+import React from 'react';
 import { Link } from "react-router-dom"
 
 const PostCard = ({ post }) => {
@@ -52,10 +53,10 @@ const PostCard = ({ post }) => {
             </svg>
             <span>{new Date(post.createdAt).toLocaleDateString()}</span>
           </div>
-        </div>
-
-        {/* Stats */}
-        <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800">
+            <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
           <div className="flex items-center space-x-4">
             <span className="flex items-center space-x-1">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -99,7 +100,6 @@ const PostCard = ({ post }) => {
             </svg>
           </Link>
         </div>
-      </div>
     </article>
   )
 }

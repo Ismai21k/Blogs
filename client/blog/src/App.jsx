@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Register  from './pages/Register.jsx'
@@ -9,8 +9,6 @@ import ReadMore from './pages/ReadMore.jsx'
 import UserManagement from './pages/UserManagement.jsx'
 
 function App() {
-  
-
   return (
     <>
       <Routes>
