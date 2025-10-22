@@ -42,10 +42,6 @@ jobs:
           cd server 
           pnpm test || true # Continue even if the tests fail
 
-      - name: Build project
-        run: |
-          cd server  
-          pnpm run build 
  
       - name: Deploy To Render 
         env:
