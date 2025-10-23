@@ -4,27 +4,27 @@ on:
   push:
     branches:
       - main
-    paths:  # Fixed typo: 'pathes' → 'paths'
+    paths:
       - 'server/**'
 
-jobs: 
-  deploy:  # Fixed typo: 'delpoy' → 'deploy'
+jobs:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # Fixed casing: 'Checkout' → 'checkout'
+        uses: actions/checkout@v3
 
-      - name: Debug list client/blog files
+      - name: Debug list server files
         run: |
           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
           ls -la server || true
           git ls-files server/package.json || echo "package.json not tracked"
 
-      - name: Setup Node.js  # Fixed typo: 'Node.jobs' → 'Node.js'
-        uses: actions/setup-node@v3  # Fixed typo: 'sectup-node' → 'setup-node'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '18.x'  # Changed to stable LTS version
+          node-version: '24.x'  # Align with your local version
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -34,30 +34,27 @@ jobs:
       - name: Install dependencies
         run: |
           cd server
-          pnpm install --frozen-lockfile
-          
-      
+          pnpm install
+
       - name: Run tests
         run: |
-          cd server 
-          pnpm test || true # Continue even if the tests fail
+          cd server
+          pnpm test || true
 
- 
-      - name: Deploy To Render 
+      - name: Deploy To Render
         env:
           RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
-          curl -X POST "https://api.render.com/deploy/srv-${RENDER_SERVICE_ID}/deploys" \
+          curl -X POST https://api.render.com/v1/services/srv-${RENDER_SERVICE_ID}/deploys \
           -H "Authorization: Bearer ${RENDER_API_KEY}" \
           -H "Content-Type: application/json"
-        
+
       - name: Notify deployment status
         if: always()
         run: |
-          if [ ${{ job.status }} == 'success' ]; then
-            echo "Backend server deployed successfully to production."
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Backend server deployed successfully to Render."
           else
-            echo "Backend server deployment failed. Please check the logs for details."
+            echo "❌ Backend server deployment failed. Check the logs."
           fi
-
