@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 
+// Post Schema definition 
 const PostSchema = new mongoose.Schema(
   {
     title: {
