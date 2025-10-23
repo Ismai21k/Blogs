@@ -8,7 +8,7 @@ on:
       - 'client/blog/**'
 
 jobs:
-  deploy:  # Fixed indentation and typo: 'delpoy' → 'deploy'
+   Deploy-Production:  
     runs-on: ubuntu-latest
 
     steps:
