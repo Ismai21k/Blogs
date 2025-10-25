@@ -48,13 +48,15 @@ jobs:
           pnpm run build
 
       - name: Deploy To Vercel
+        working-directory: client/blog
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          cd client/blog  # Added cd command
-          npx vercel --prod --token ${VERCEL_TOKEN} --yes  # Simplified Vercel deployment command
+          npx vercel pull --yes --token ${VERCEL_TOKEN}
+          npx vercel --prod --token ${VERCEL_TOKEN} --yes
+
         
       - name: Notify deployment status
         if: always()  # Run this step regardless of previous step results
