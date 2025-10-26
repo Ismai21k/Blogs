@@ -3,13 +3,14 @@ import React from 'react';
 import { Link } from "react-router-dom"
 
 const PostCard = ({ post }) => {
+  const Base_URL = import.meta.env.VITE_API_BASE_URL
   return (
     <article className="group bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/20 dark:border-gray-700/50 transform hover:-translate-y-2">
       {/* Featured Image */}
       {post.featuredImage && (
         <div className="relative overflow-hidden">
           <img
-            src={`https://blog-app-dbhw.onrender.com/uploads/${post.featuredImage}`}
+            src={`${Base_URL}/uploads/${post.featuredImage}`}
             alt={post.title}
             className="w-full h-64 sm:h-72 object-cover transition-transform duration-700 group-hover:scale-110"
           />

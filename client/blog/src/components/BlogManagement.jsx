@@ -14,14 +14,15 @@ const BlogManagement = ({
   setEditPostId,
   onTogglePublish,
 }) => {
-  const isEditing = editPostId === post._id
+  const isEditing = editPostId === post._id;
+  const Base_URL = import.meta.env.VITE_API_BASE_URL;
 
   return (
     <div className="group transition-all duration-300 hover:scale-[1.01]">
-      {!isEditing && post.featuredImage && (
+      {!isEditing && post.featuredImage && ( 
         <div className="relative overflow-hidden rounded-t-3xl">
           <img
-            src={`http://localhost:5000/uploads/${post.featuredImage}`}
+            src={`${Base_URL}/uploads/${post.featuredImage}`}
             alt={post.title}
             className="w-full h-48 sm:h-64 object-cover transition-transform duration-700 group-hover:scale-105"
           />

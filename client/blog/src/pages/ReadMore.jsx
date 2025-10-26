@@ -11,6 +11,7 @@ const ReadMore = () => {
   const [post, setPost] = useState(null)
   const [comment, setComment] = useState("")
   const [loading, setLoading] = useState(true)
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -83,7 +84,7 @@ const ReadMore = () => {
           <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/50 overflow-hidden mb-8">
             <div className="aspect-video w-full overflow-hidden">
               <img
-                src={`https://blog-app-dbhw.onrender.com/uploads/${post.featuredImage}`}
+                src={`${BASE_URL}/uploads/${post.featuredImage}`}
                 alt={post.title}
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />

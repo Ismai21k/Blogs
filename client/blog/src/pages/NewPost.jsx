@@ -66,7 +66,7 @@ const NewPost = () => {
 
     try {
       await postService.createPost(formData)
-      navigate("/home")
+      navigate("/")
     } catch (error) {
       console.error("Failed to create post", error)
     } finally {
