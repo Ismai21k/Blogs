@@ -6,38 +6,44 @@ const User = require('../models/User'); // Make sure this is present
 
 // Create a new post
 exports.createPost = async (req, res) => {
-    try {
+  try {
     const featuredImage = req.file ? req.file.filename : 'default-post.jpg';
     console.log('FILE INFO:', req.file);
+    console.log('POST INFO:', req.body);
 
-    // 1. Create a new category regardless of duplication
-    const newCategory = new Category({
+    // 1. Find existing category or create a new one if it doesn't exist
+    let category = await Category.findOne({
       name: req.body.categoryName || 'Uncategorized',
     });
-    await newCategory.save();
 
-    // 2. Create post and assign the new category's ID
-    console.log('slug:', req.body.slug)
-    delete req.body.slug // slug will be auto-generated
+    if (!category) {
+      category = new Category({
+        name: req.body.categoryName || 'Uncategorized',
+      });
+      await category.save();
+    }
+
+    // 2. Create the post with the category ID
+    delete req.body.slug; // slug will be auto-generated
+
     const post = new Post({
       ...req.body,
       featuredImage,
-      category: newCategory._id
+      category: category._id,
     });
-    console.log('slug:', post.slug)
+
     await post.save();
-    console.log('slug:', post.slug)
 
     res.status(201).json({
       success: true,
-      message: post
+      message: post,
     });
   } catch (error) {
     console.error('Error creating post:', error.message);
     res.status(500).json({
       success: false,
       message: 'Server Error',
-      error: error.message
+      error: error.message,
     });
   }
 };
