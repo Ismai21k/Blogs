@@ -11,7 +11,7 @@ const ReadMore = () => {
   const [post, setPost] = useState(null)
   const [comment, setComment] = useState("")
   const [loading, setLoading] = useState(true)
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL // your backend URL
 
   useEffect(() => {
     const fetchPost = async () => {
