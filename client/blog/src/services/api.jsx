@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL
 //https://blog-app-dbhw.onrender.com/
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',// this a http header that tells the server that the request body is in json format
   },
