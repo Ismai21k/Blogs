@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from "react"
+import { useNavigate } from 'react-router-dom';
 import { postService } from "../services/api.jsx"
 import { Navbar } from "../components/Navbar.jsx"
 import { Footer } from "../components/Footer.jsx"
@@ -7,12 +8,14 @@ import BlogManagement from "../components/BlogManagement.jsx"
 import { categoryService } from "../services/api.jsx"
 import { Button } from "../components/Buttom.jsx"
 
+
 const UserManagement = () => {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [editPostId, setEditPostId] = useState(null)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const navigate = useNavigate();
   const [editPostData, setEditPostData] = useState({
     title: "",
     content: "",
@@ -183,7 +186,7 @@ const UserManagement = () => {
                 You haven't created any blog posts yet. Start writing your first post to share your ideas with the
                 world!
               </p>
-              <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+              <button onClick={() => navigate('/newblog')} className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"

@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { postService } from "../services/api.jsx"
 import { Navbar } from "../components/Navbar.jsx"
 import { Footer } from "../components/Footer.jsx"
@@ -12,7 +12,10 @@ const ReadMore = () => {
   const [comment, setComment] = useState("")
   const [loading, setLoading] = useState(true)
   const BASE_URL = import.meta.env.VITE_API_BASE_URL // your backend URL
-
+  const storedUser = localStorage.getItem("user")
+  const user = storedUser ? JSON.parse(storedUser) : null
+  const navigate = useNavigate()
+  console.log("Current User:", user)
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -39,6 +42,11 @@ const ReadMore = () => {
     if (!comment.trim()) return
 
     try {
+      if(user === null) {
+        alert("Please Login to post a comment")
+        navigate("/login")
+        return
+      }
       const res = await postService.addComment(id, comment)
       setPost({ ...post, comments: [...post.comments, res.comment] })
       setComment("")

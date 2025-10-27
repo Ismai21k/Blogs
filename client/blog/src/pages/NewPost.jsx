@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { useState } from "react"
+import { useEffect,useState } from "react"
 import { postService } from "../services/api.jsx"
 import { useNavigate } from "react-router-dom"
 import { Navbar } from "../components/Navbar.jsx"
@@ -13,6 +13,19 @@ const NewPost = () => {
   const [featuredImage, setFeaturedImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const navigate = useNavigate()
+
+  const NewPost = () => {
+    if(!user) {
+      alert("Please login to create a new blog post")
+      navigate("/login")
+      return
+    }
+  }
+
+  useEffect(() => {
+      NewPost()
+    },[])
 
   const [postData, setPostData] = useState({
     title: "",
@@ -23,7 +36,7 @@ const NewPost = () => {
     isPublished: false,
   })
 
-  const navigate = useNavigate()
+  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
