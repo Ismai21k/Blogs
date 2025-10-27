@@ -10,8 +10,7 @@ const protect = require('../middleware/Protect');
 router
   .route('/posts')
   .post(upload.single('featuredImage'), createPost) // upload + controller
-  .get(getBlog);                                   // list all posts
-
+  .get(getBlog);                                  
 router
   .route('/posts/:id')
   .get(getSpecificBlog)
