@@ -68,19 +68,37 @@ const PostSchema = new mongoose.Schema(
 
 // validate ensures the slug is available before validation and save, even in dev environments.
 PostSchema.pre('validate', function (next) {
-
   if (!this.isModified('title')) {
     console.log('Title not modified. Skipping slug generation.');
     return next();
   }
 
-  this.slug = this.title
+  // Step 1: Normalize Unicode forms (handle accents)
+  let title = this.title.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+
+  // Step 2: Convert fancy mathematical letters to plain ASCII equivalents
+  title = title.replace(/[\u{1D400}-\u{1D7FF}]/gu, c => {
+    const code = c.codePointAt(0);
+
+    // Uppercase A–Z (Mathematical Bold/Italic/Script etc.)
+    if (code >= 0x1D400 && code <= 0x1D419) return String.fromCharCode(code - 0x1D400 + 0x41);
+    // Lowercase a–z
+    if (code >= 0x1D41A && code <= 0x1D433) return String.fromCharCode(code - 0x1D41A + 0x61);
+
+    return ''; // remove unsupported
+  });
+
+  console.log('Normalized Title:', title);
+
+  // Step 3: Generate clean slug
+  this.slug = title
     .toLowerCase()
-    .replace(/[^\w ]+/g, '')
-    .replace(/ +/g, '-');
+    .replace(/[^\p{L}\p{N}\s-]+/gu, '')  // keep unicode letters/numbers
+    .trim()
+    .replace(/\s+/g, '-')                // spaces → hyphens
+    .replace(/-+/g, '-');                // collapse multiple dashes
 
   next();
-
 });
 
 // Virtual for post URL
