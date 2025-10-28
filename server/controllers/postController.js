@@ -11,14 +11,17 @@ exports.createPost = async (req, res) => {
     console.log('FILE INFO:', req.file);
     console.log('POST INFO:', req.body);
 
+    const categoryName = req.body.categoryName || 'Uncategorized';
+    const lowerCaseCategoryName = categoryName.toLowerCase();
+
     // 1. Find existing category or create a new one if it doesn't exist
     let category = await Category.findOne({
-      name: req.body.categoryName || 'Uncategorized',
+      name: lowerCaseCategoryName,
     });
 
     if (!category) {
       category = new Category({
-        name: req.body.categoryName || 'Uncategorized',
+        name: lowerCaseCategoryName,
       });
       await category.save();
     }
