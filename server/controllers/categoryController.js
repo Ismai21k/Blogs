@@ -11,7 +11,7 @@ exports.createCategory = async (req, res) => {
                 message: 'Category name is required'
             });
         }
-        const category = new Category({ name, description });
+        const category = new Category({ name: name.toLowerCase(), description });
         await category.save();
         res.status(201).json({
             success: true,
