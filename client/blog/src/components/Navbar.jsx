@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useLocation } from "react-router-dom"
+import { Link,NavLink, useLocation } from "react-router-dom"
 import { useState } from "react"
 
 export const Navbar = () => {
@@ -21,6 +21,7 @@ export const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
+          <Link to="/" className="flex items-center space-x-3 hover:opacity-90 transition">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -31,6 +32,7 @@ export const Navbar = () => {
               BlogSpace
             </h1>
           </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">

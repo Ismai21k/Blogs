@@ -15,7 +15,7 @@ const Home = () => {
         const data = await postService.getAllPosts()
         setPosts(data.posts)
 
-        if (data.posts.length === 0) {
+        if (data.posts.length === null || data.post.length === 0) {
           alert("No posts available at the moment.")
         } else {
           console.log("Posts:", data.posts)
