@@ -7,7 +7,7 @@ const User = require('../models/User'); // Make sure this is present
 // Create a new post
 exports.createPost = async (req, res) => {
   try {
-    const featuredImage = req.file ? req.file.filename : 'default-post.jpg';
+    const featuredImage = req.file ? req.file.path : 'default-post.jpg';
     console.log('FILE INFO:', req.file);
     console.log('POST INFO:', req.body);
 
