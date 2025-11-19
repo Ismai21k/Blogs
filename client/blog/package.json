@@ -2,6 +2,8 @@
   "name": "blog",
   "private": true,
   "version": "0.0.0",
+  "author": "ismail kabir",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -10,8 +10,8 @@
     "type": "commonjs"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "ismail kabir",
+  "license": "MIT",
   "packageManager": "pnpm@10.12.2",
   "dependencies": {
     "bcrypt": "^6.0.0",
