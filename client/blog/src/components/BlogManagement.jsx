@@ -22,7 +22,7 @@ const BlogManagement = ({
       {!isEditing && post.featuredImage && ( 
         <div className="relative overflow-hidden rounded-t-3xl">
           <img
-            src={`${Base_URL}/uploads/${post.featuredImage}`}
+            src={`${post.featuredImage}`}
             alt={post.title}
             className="w-full h-48 sm:h-64 object-cover transition-transform duration-700 group-hover:scale-105"
           />
