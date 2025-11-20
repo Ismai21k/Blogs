@@ -1,5 +1,5 @@
 const express = require('express');
-const {createPost, getBlog, getSpecificBlog, updateBlog, deleteBlog, addComment, getUserPosts} = require('../controllers/postController');
+const {createPost, getBlog, getSpecificBlog, updateBlog, deleteBlog, addComment, getUserPosts, previewBlog} = require('../controllers/postController');
 const upload = require('../middleware/Upload');
 const router = express.Router();
 const protect = require('../middleware/Protect');
@@ -17,6 +17,10 @@ router
   .get(getSpecificBlog)
   .put(updateBlog)
   .delete(deleteBlog);
+
+// Server-side preview route for social crawlers
+router.get('/posts/:id/preview', previewBlog);
+
 
 
 router

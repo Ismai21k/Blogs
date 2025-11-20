@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom"
 import { postService } from "../services/api.jsx"
 import { Navbar } from "../components/Navbar.jsx"
 import { Footer } from "../components/Footer.jsx"
+import ShareButtons from "../components/ShareButtons.jsx"
+import { estimateReadTime } from "../utils/readTime.js"
 
 const ReadMore = () => {
   const { id } = useParams()
@@ -37,6 +39,43 @@ const ReadMore = () => {
     fetchPost()
   }, [id])
 
+  // update document meta tags for social sharing
+  useEffect(() => {
+    if (!post) return
+    const title = post.title
+    const description = post.excerpt || (post.content || '').slice(0, 150)
+    const image = post.featuredImage || '/og-default.png'
+
+    try {
+      document.title = `${title} — BlogSpace`
+
+      const setMeta = (selector, attr, value) => {
+        let el = document.querySelector(selector)
+        if (!el) {
+          el = document.createElement('meta')
+          if (selector.startsWith('meta[name')) {
+            const name = selector.match(/meta\[name=\"(.+)\"\]/)[1]
+            el.setAttribute('name', name)
+          } else if (selector.startsWith('meta[property')) {
+            const prop = selector.match(/meta\[property=\"(.+)\"\]/)[1]
+            el.setAttribute('property', prop)
+          }
+          document.head.appendChild(el)
+        }
+        el.setAttribute(attr, value)
+      }
+
+      setMeta('meta[property="og:title"]', 'content', title)
+      setMeta('meta[property="og:description"]', 'content', description)
+      setMeta('meta[property="og:image"]', 'content', image)
+      setMeta('meta[name="twitter:card"]', 'content', 'summary_large_image')
+      setMeta('meta[name="twitter:creator"]', 'content', '@yourhandle')
+    } catch (err) {
+      // ignore DOM manipulation errors in non-browser environments
+      console.warn('Could not update meta tags', err)
+    }
+  }, [post])
+  
   const handleCommentSubmit = async (e) => {
     e.preventDefault()
     if (!comment.trim()) return
@@ -54,6 +93,8 @@ const ReadMore = () => {
       console.error("Error posting comment:", err)
     }
   }
+
+  console.log("Post data:", post)
 
   if (loading) {
     return (
@@ -153,6 +194,24 @@ const ReadMore = () => {
                   </svg>
                   <span>{post.comments.length} comments</span>
                 </span>
+                <span className="flex items-center space-x-1">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                  </svg>
+                  <span>{estimateReadTime(post.content || '').display}</span>
+                </span>
+              </div>
+
+              <div className="mb-6 flex items-center justify-between">
+                <ShareButtons url={window.location.href} title={post.title} image={post.featuredImage} />
+                <div>
+                  <button
+                    onClick={() => { navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard') }}
+                    className="ml-4 inline-flex items-center gap-2 px-3 py-2 border rounded-md text-sm hover:bg-gray-50"
+                  >
+                    Copy link
+                  </button>
+                </div>
               </div>
 
               <div className="prose prose-lg prose-gray dark:prose-invert max-w-none">

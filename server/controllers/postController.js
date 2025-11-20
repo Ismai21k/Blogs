@@ -63,7 +63,7 @@ exports.getBlog = async (req, res) => {
         const [posts, total] = await Promise.all([
                 Post.find({isPublished: true, filter:category})
                     .populate('author', 'username email')
-                    .select('title excerpt slug featuredImage viewCount comments createdAt') // only summary fields
+                    .select('title excerpt slug featuredImage content viewCount comments createdAt') // only summary fields
                     .sort({ createdAt: -1 })
                     .skip((page - 1) * limit)
                     .limit(limit)
@@ -328,3 +328,118 @@ exports.addComment = async (req, res) => {
     });
   }
 };
+
+// Server-side preview used by social crawlers (returns HTML with OG tags)
+exports.previewBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const post = await Post.findById(id).populate('author', 'username');
+
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+
+    // Decide whether requester is a crawler/bot. If it's a browser (human), redirect to client SPA.
+    const ua = (req.get('user-agent') || '').toLowerCase();
+    const botSignatures = [
+      'facebookexternalhit',
+      'twitterbot',
+      'linkedinbot',
+      'slackbot',
+      'discordbot',
+      'whatsapp',
+      'telegrambot',
+      'applebot',
+      'pinterest',
+      'bingbot',
+      'googlebot',
+    ];
+
+    const isBot = botSignatures.some(sig => ua.includes(sig));
+
+    const host = req.get('host');
+    const protocol = req.protocol;
+    const canonical = `${protocol}://${host}/readmore/${post._id}`; // client route
+
+    if (!isBot) {
+      // Human browser: redirect to client SPA so users land on the app
+      return res.redirect(302, canonical);
+    }
+
+    // Build absolute URL for image (handles relative upload paths)
+    let imageUrl = '';
+    if (post.featuredImage) {
+      if (/^https?:\/\//i.test(post.featuredImage)) {
+        imageUrl = post.featuredImage;
+      } else {
+        const path = post.featuredImage.startsWith('/') ? post.featuredImage : `/${post.featuredImage}`;
+        imageUrl = `${protocol}://${host}${path}`;
+      }
+    }
+
+    const title = post.title || 'Untitled Article';
+    const description = post.excerpt || (post.content || '').slice(0, 160).replace(/\n/g, ' ');
+
+    // JSON-LD Article schema
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": title,
+      "description": description,
+      "author": {
+        "@type": "Person",
+        "name": post.author?.username || 'Unknown'
+      },
+      "url": canonical,
+      ...(imageUrl ? { image: imageUrl } : {}),
+      "datePublished": post.createdAt ? new Date(post.createdAt).toISOString() : undefined
+    };
+
+    const html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>${escapeHtml(title)}</title>
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="${escapeHtml(title)}" />
+    <meta property="og:description" content="${escapeHtml(description)}" />
+    ${imageUrl ? `<meta property="og:image" content="${escapeHtml(imageUrl)}" />` : ''}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${escapeHtml(title)}" />
+    <meta name="twitter:description" content="${escapeHtml(description)}" />
+    ${imageUrl ? `<meta name="twitter:image" content="${escapeHtml(imageUrl)}" />` : ''}
+    <link rel="canonical" href="${escapeHtml(canonical)}" />
+    <script type="application/ld+json">${escapeHtml(JSON.stringify(jsonLd))}</script>
+    <style>body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#fff;color:#111;padding:3rem}</style>
+  </head>
+  <body>
+    <article>
+      <h1>${escapeHtml(title)}</h1>
+      <p>${escapeHtml(description)}</p>
+      ${imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(title)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:1rem"/>` : ''}
+      <p style="margin-top:1rem;color:#666">By ${escapeHtml(post.author?.username || 'Unknown')}</p>
+      <p style="margin-top:2rem;color:#666">This is a server-rendered preview page used for social sharing crawlers. The canonical link points to the client article page.</p>
+    </article>
+  </body>
+</html>`;
+
+    res.set('Content-Type', 'text/html');
+    return res.send(html);
+  } catch (error) {
+    console.error('Error generating preview:', error);
+    return res.status(500).send('Server error');
+  }
+};
+
+// Simple HTML-escaping helper to avoid injecting raw content
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
