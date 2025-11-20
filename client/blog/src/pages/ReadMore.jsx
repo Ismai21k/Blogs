@@ -10,6 +10,7 @@ import { estimateReadTime } from "../utils/readTime.js"
 
 const ReadMore = () => {
   const { id } = useParams()
+  console.log("Post ID from URL:", id)
   const [post, setPost] = useState(null)
   const [comment, setComment] = useState("")
   const [loading, setLoading] = useState(true)
