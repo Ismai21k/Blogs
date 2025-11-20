@@ -16,6 +16,8 @@ A full‑stack blog platform built with MongoDB, Express, React (Vite) and Node.
 - Client API helper: `client/blog/src/services/api.jsx`
 - CI workflows: `.github/workflows/server.yml`, `.github/workflows/client.yml`
 
+- Redesign plan: `REDESIGN.md`
+
 ---
 
 ## Features

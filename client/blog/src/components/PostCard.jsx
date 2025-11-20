@@ -1,9 +1,11 @@
 "use client"
 import React from 'react';
 import { Link } from "react-router-dom"
+import { estimateReadTime } from "../utils/readTime.js"
 
 const PostCard = ({ post }) => {
   const Base_URL = import.meta.env.VITE_API_BASE_URL
+  console.log("post content", post)
   return (
     <article className="group bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/20 dark:border-gray-700/50 transform hover:-translate-y-2">
       {/* Featured Image */}
@@ -36,7 +38,7 @@ const PostCard = ({ post }) => {
           {post.excerpt || "No excerpt available..."}
         </p>
 
-        {/* Author and Date */}
+        {/* Author, Date and meta */}
         <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xs">
@@ -80,6 +82,8 @@ const PostCard = ({ post }) => {
               </svg>
               <span>{post.comments?.length || 0}</span>
             </span>
+            <span className="text-xs text-gray-400">•</span>
+            <span className="text-xs text-gray-400">{estimateReadTime(post.content || '').display}</span>
           </div>
 
           {/* Read More Button */}
