@@ -18,6 +18,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Debug - list server files
+        run: |
+          echo "Listing server directory"
+          ls -la server || true
+          echo "Git-tracked server files:"
+          git ls-files server || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
