@@ -360,7 +360,11 @@ exports.previewBlog = async (req, res) => {
 
     const host = req.get('host');
     const protocol = req.protocol;
-    const canonical = `${protocol}://${host}/readmore/${post._id}`; // client route
+    
+    const frontendBase = (process.env.CLIENT_URL || '')
+      .replace(/\/$/, '');
+    const canonicalBase = frontendBase || `${protocol}://${host}`;
+    const canonical = `${canonicalBase}/readmore/${post._id}`;
 
     if (!isBot) {
       // Human browser: redirect to client SPA so users land on the app
